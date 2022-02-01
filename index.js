@@ -12,4 +12,10 @@ mongoose
   .then(() => console.log("conectado a mongoDB con éxito"))
   .catch((err) => console.error(err));
 
+
+
+app.use('/posts', require('./routes/posts'));
+app.use('/users', require('./routes/users'));
+
+
 app.listen(PORT, console.log(`Server started on port ${PORT}`));
