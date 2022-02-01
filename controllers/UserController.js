@@ -1,9 +1,19 @@
 const User = require("../models/User");
 const bcrypt = require ('bcryptjs');
-
+const jwt = require('jsonwebtoken');
+const { jwt_secret } = require('../config/keys.js')
 
 
 const UserController ={
+    async getAll(req, res) {
+        try {
+           const users = await User.find()
+           res.send(users)
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
     async create(req,res){
         try {
             req.body.role = req.body.role ? req.body.role : "user";
@@ -16,12 +26,9 @@ const UserController ={
         }
     },
 
-    login(req,res){
-        User.findOne({
-            where:{
-                email:req.body.email
-            }
-        }).then(user=>{
+    async login(req,res){
+        try {
+            const user = await User.findOne({ email: req.body.email });
             if(!user){
                 return res.status(400).send({message:"Usuario o contraseña incorrectos"})
             }
@@ -29,9 +36,13 @@ const UserController ={
             if(!isMatch){
                 return res.status(400).send({message:"Usuario o contraseña incorrectos"})
             }
-            res.send(user)
-        })
+            token = jwt.sign({ _id: user._id }, jwt_secret);
+            req.body.token = token;
+            res.send({ message: 'Bienvenido ' + user.username, user, token});
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: 'there was a problem' })
+        }
     }
-
 }
 module.exports = UserController;

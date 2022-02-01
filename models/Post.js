@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
 
 const PostSchema = new mongoose.Schema({
-    title: String,
-    body: String,
+    title: {
+        type: String,
+        required: [true, 'please add a title']
+    },
+    body: {
+        type: String,
+        required: [true, 'please add a body']
+    },
     image: String
 }, { timestamps: true });
 
