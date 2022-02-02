@@ -17,20 +17,26 @@ const UserController ={
 
     async create(req,res){
         try {
-            if(!req.body.username || !req.body.email || !req.body.password){
+            if( !req.body.password){
                 return res.status(400).json({msg:'Por favor rellene todos los campos'})
+            }
+            const email = req.body.email;
+            const user = await User.findOne({ email: email })
+            if (user) {
+                return res.status(400).send({ message: 'Este correo ya existe' });
             }
             req.body.role = req.body.role ? req.body.role : "user";
             const hash = bcrypt.hashSync(req.body.password,10);
-            const user = await User.create({...req.body, password:hash, confirmed: false  })
-            const url = 'http://localhost:3000/users/confirm/'+ req.body.email
+            const newUser = await User.create({...req.body, password:hash, confirmed: false  })
+            const emailToken = jwt.sign({email:req.body.email},jwt_secret,{expiresIn:'48h'})
+            const url = 'http://localhost:3000/users/confirm/'+ emailToken
             await transporter.sendMail({
                 to: req.body.email,
                 subject: "Confirme su registro",
                 html: `<h3>Bienvenido, estás a un paso de registrarte </h3>
                 <a href="${url}"> Click para confirmar tu registro</a>`,
               });        
-            res.status(201).send({ message: 'waiting for confirmation, please check your email', user})
+            res.status(201).send({ message: 'waiting for confirmation, please check your email', newUser})
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: 'there was a problem creating the user' })
@@ -77,12 +83,16 @@ const UserController ={
 
       async confirm(req,res){
         try {
-          const user = await User.findOneAndUpdate( req.body.email, {confirmed: true}, {new: true} )
+        const token = req.params.emailToken
+        const payload = jwt.verify(token,jwt_secret)      
+        await User.findOneAndUpdate( {email: payload.email}, {$set:{confirmed: true}}, {new: true} )
+        //   const user = await User.findOneAndUpdate( req.body.email, {confirmed: true}, {new: true} )
           res.status(201).send( "User confirmed" );
         } catch (error) {
           console.error(error)
         }
-      },    
+      },
+      
     
     
 }

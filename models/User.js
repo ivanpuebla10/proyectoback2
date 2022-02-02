@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
-        unique: true,
+        unique: [true, 'username already exists'],
         required: [true, 'please add an username']
     },
     email: {
         type: String,
-        unique: true,
+        unique: [true, 'email already exists'],
         required: [true,  'please add a email']
     },
     password: {
