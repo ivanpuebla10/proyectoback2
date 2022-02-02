@@ -4,12 +4,12 @@ const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
-        required: [true, 'please add a username']
+        required: [true, 'please add an username']
     },
     email: {
         type: String,
         unique: true,
-        required: [true, 'please add an email']
+        required: [true,  'please add a email']
     },
     password: {
         type: String,
@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema({
     },
     role: String,
     confirmed: Boolean,
-    token: String,
+    token: [],
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);

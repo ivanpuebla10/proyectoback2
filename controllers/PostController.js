@@ -3,7 +3,10 @@ const Post = require("../models/Post");
 const PostController ={
     async create(req,res){
         try {
-            const post = await Post.create({...req.body })
+            if(!req.body.title || !req.body.body){
+                return res.status(400).json({msg:'Por favor rellene todos los campos'})
+            }
+            const post = await Post.create({...req.body, userId: req.user._id})
             res.status(201).send(post)
         } catch (error) {
             console.error(error)
@@ -18,7 +21,7 @@ const PostController ={
         } catch (error) {
           console.error(error);
         }    
-    },
+    },  
 
     async delete(req, res) {
         try {
@@ -60,10 +63,6 @@ const PostController ={
             console.error(error);
         }
     }
-
-
-
-
 
 }
 module.exports = PostController;
