@@ -10,5 +10,6 @@ router.delete('/:_id', authentication, isAuthor, PostController.delete);
 router.get('/',PostController.getAll);
 router.get('/title/:title',PostController.getPostsByName);
 router.get('/id/:_id',PostController.getById);
+router.put('/comments/:_id', authentication, PostController.insertComment)
 
 module.exports = router;

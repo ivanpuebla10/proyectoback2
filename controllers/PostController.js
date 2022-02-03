@@ -1,4 +1,6 @@
 const Post = require("../models/Post");
+const User = require('../models/User.js');
+
 
 const PostController ={
     async create(req,res){
@@ -6,11 +8,13 @@ const PostController ={
             if(!req.body.title || !req.body.body){
                 return res.status(400).json({msg:'Por favor rellene todos los campos'})
             }
+            
             const post = await Post.create({...req.body, userId: req.user._id})
+            await User.findByIdAndUpdate(req.user._id, { $push: { postIds: post._id } })
             res.status(201).send(post)
         } catch (error) {
             console.error(error)
-            res.status(500).send({ message: 'there was a problem creating the product' })
+            res.status(500).send({ message: 'there was a problem creating the post' })
         }
     },
 
@@ -35,12 +39,17 @@ const PostController ={
 
     async getAll(req, res) {
         try {
-           const posts = await Post.find()
-           res.send(posts)
+          const { page = 1, limit = 10 } = req.query;
+          const posts = await Post.find()
+            .populate("comments.userId")
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+          res.send(posts);
         } catch (error) {
-            console.error(error);
+          console.error(error);
         }
-    },
+      },
+    
 
     async getPostsByName(req, res) {
         try {
@@ -62,7 +71,22 @@ const PostController ={
         } catch (error) {
             console.error(error);
         }
-    }
+    },
+
+    async insertComment(req, res) {
+        try {
+          const post = await Post.findByIdAndUpdate(
+            req.params._id,
+            { $push: { comments: { ...req.body, userId: req.user._id, userName: req.user.username } } },
+            { new: true }
+          );
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "There was a problem with your comment" });
+        }
+      },
+   
 
 }
 module.exports = PostController;

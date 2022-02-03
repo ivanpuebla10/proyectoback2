@@ -15,6 +15,16 @@ const UserController ={
         }
     },
 
+    async getInfo(req, res) {
+      try {
+        const user = await User.findById(req.user._id).populate("postIds");
+        res.send(user);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  
+
     async create(req,res){
         try {
             if( !req.body.password){
@@ -86,14 +96,13 @@ const UserController ={
         const token = req.params.emailToken
         const payload = jwt.verify(token,jwt_secret)      
         await User.findOneAndUpdate( {email: payload.email}, {$set:{confirmed: true}}, {new: true} )
-        //   const user = await User.findOneAndUpdate( req.body.email, {confirmed: true}, {new: true} )
-          res.status(201).send( "User confirmed" );
+        res.status(201).send( "User confirmed" );
         } catch (error) {
           console.error(error)
         }
       },
       
-    
+
     
 }
 module.exports = UserController;

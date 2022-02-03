@@ -16,9 +16,11 @@ const PostSchema = new mongoose.Schema({
     },
     image: String,
     comments: [{
-        username: String,
-        body: String
-     }]
+        userId: { type: ObjectId, ref: 'User' },
+        userName: { type: String, ref: "User" },
+        comment: String
+    }]
+
 }, { timestamps: true });
 
 const Post = mongoose.model('Post', PostSchema);
