@@ -60,7 +60,7 @@ const UserController ={
                 return res.status(400).send({message:"email or password wrong"})
             }
             if(!user.confirmed){
-                return res.status(400).send({message:"Debes confirmar tu correo"})
+                return res.status(400).send({message:"Please check your email and confirm your account"})
             }
             const isMatch = bcrypt.compareSync(req.body.password, user.password);
             if(!isMatch){

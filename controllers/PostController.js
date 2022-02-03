@@ -6,7 +6,7 @@ const PostController ={
     async create(req,res){
         try {
             if(!req.body.title || !req.body.body){
-                return res.status(400).json({msg:'Por favor rellene todos los campos'})
+                return res.status(400).json({msg:'Please fill in all the fields'})
             }
             
             const post = await Post.create({...req.body, userId: req.user._id})
@@ -86,7 +86,42 @@ const PostController ={
           res.status(500).send({ message: "There was a problem with your comment" });
         }
       },
-   
+
+    async like(req, res) {
+        try {
+          
+          const post = await Post.findByIdAndUpdate(
+            req.params._id,
+            { $push: { liked: { ...req.body, userId: req.user._id, userName: req.user.username  } },
+            },
+            { new: true }
+          )
+          post.likes=post.liked.length;
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "There was a problem with your like" });
+        }
+      },
+
+      async deslike(req, res) {
+        try {
+          const post = await Post.findByIdAndUpdate(
+            req.params._id,
+          );
+          post.liked = post.liked.filter((elem) = () =>{
+              if(req.user._id.toString() !== elem.userId.toString()) {
+                  return elem
+              }});
+          post.save()
+          post.likes=post.liked.length;
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "There was a problem with your deslike" });
+        }
+      },
+
 
 }
 module.exports = PostController;
