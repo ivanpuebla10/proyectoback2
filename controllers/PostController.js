@@ -4,6 +4,7 @@ const User = require("../models/User.js");
 const PostController = {
   async create(req, res) {
     try {
+      if (req.file) req.body.image_path = req.file.filename;
       if (!req.body.title || !req.body.body) {
         return res.status(400).json({ msg: "Please fill in all the fields" });
       }
@@ -91,7 +92,6 @@ const PostController = {
             comments: {
               ...req.body,
               userId: req.user._id,
-              userName: req.user.username,
             },
           },
         },
@@ -106,20 +106,42 @@ const PostController = {
     }
   },
 
-  async like(req, res) {
+  async deleteComment(req, res) {
     try {
-    //   let noSe = await Post.findOne({
-    //         likes: req.user._id.toString(),
-    //       });
-    //       console.log(noSe)
-    //   if (noSe) return res.status(400).send("ya diste like");
-    //   console.log(noSe)
       const post = await Post.findByIdAndUpdate(
         req.params._id,
-        { $push: { likes: req.user._id } },
+        {
+          $pull: {
+            comments: {
+              userId: req.user._id,
+            },
+          },
+        },
         { new: true }
       );
       res.send(post);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem deleting your comment" });
+    }
+  },
+
+  async like(req, res) {
+    try {
+      const found = await Post.findById(req.params._id);
+      if ( !found.likes.includes(req.user._id)) {
+        const post = await Post.findByIdAndUpdate(
+            req.params._id,
+            { $push: { likes: req.user._id } },
+            { new: true }
+          );
+      res.send(post);
+        }
+        else {
+          res.status(400).send({ message: "you already liked this post" });
+        }
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "There was a problem with your like" });
