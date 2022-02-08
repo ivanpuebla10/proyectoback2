@@ -37,6 +37,15 @@ const PostController = {
   async delete(req, res) {
     try {
       const post = await Post.findByIdAndDelete(req.params._id);
+      await User.findByIdAndUpdate(
+        post.userId,
+        {
+          $pull: {
+            postIds: post._id
+          },
+        },
+        { new: true } 
+      );
       res.send({ post, message: "Post deleted" });
     } catch (error) {
       console.error(error);
@@ -138,7 +147,7 @@ const PostController = {
             },
           },
         },
-        { new: true }
+        { new: true } 
       );
       res.send(post);
     } catch (error) {
@@ -146,7 +155,7 @@ const PostController = {
       res
         .status(500)
         .send({ message: "There was a problem deleting your comment" });
-    }
+    } 
   },
 
   async like(req, res) {
