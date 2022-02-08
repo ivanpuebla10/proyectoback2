@@ -25,6 +25,7 @@ const UserController = {
 
   async create(req, res) {
     try {
+      if (req.file) req.body.image_path = req.file.filename;
       let user = await User.findOne({
         email: req.body.email,
       });
@@ -61,6 +62,20 @@ const UserController = {
       res.status(500).send(error);
     }
   },
+  
+  async update(req, res) {
+    try {
+      if (req.file) req.body.image_path = req.file.filename;
+      const User = await User.findByIdAndUpdate(req.params._id, req.body, {
+        new: true,
+      });
+      res.send({ message: "user successfully updated", user });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  //crear endpoint actualizar usuario y multer de images
 
   async login(req, res) {
     try {

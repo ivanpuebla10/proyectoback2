@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router()
 const UserController = require('../controllers/UserController');
 const { authentication } = require("../middlewares/authentication");
+const { uploadUserProductsImages } = require('../middlewares/multer');
 
-router.post('/',UserController.create)
+
+router.post('/', uploadUserProductsImages.single('imagePost'), UserController.create)
 router.post('/login', UserController.login)
+router.put('/:_id', authentication, UserController.update)
 router.get('/',UserController.getAll)
 router.delete('/logout',authentication, UserController.logout)
 router.get('/confirm/:emailToken',UserController.confirm)

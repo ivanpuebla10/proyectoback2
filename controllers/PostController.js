@@ -24,6 +24,7 @@ const PostController = {
 
   async update(req, res) {
     try {
+      if (req.file) req.body.image_path = req.file.filename;
       const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
@@ -85,6 +86,7 @@ const PostController = {
 
   async insertComment(req, res) {
     try {
+      if (req.file) req.body.image_path = req.file.filename;
       const post = await Post.findByIdAndUpdate(
         req.params._id,
         {
@@ -105,6 +107,25 @@ const PostController = {
         .send({ message: "There was a problem with your comment" });
     }
   },
+//arreglar esto, que me busque el id del comment o algo asi
+  async updateComment(req, res) {
+    try {
+      if (req.file) req.body.image_path = req.file.filename;
+      const post = await Post.findByIdAndUpdate(
+        req.params._id,
+        {comments: {
+            ...req.body},
+        },
+        { new: true }
+      );
+      res.send(post);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem with your comment" });
+    }
+  },
 
   async deleteComment(req, res) {
     try {
@@ -113,7 +134,7 @@ const PostController = {
         {
           $pull: {
             comments: {
-              userId: req.user._id,
+              _id: req.body._id,
             },
           },
         },
