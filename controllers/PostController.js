@@ -4,11 +4,10 @@ const User = require("../models/User.js");
 const PostController = {
   async create(req, res) {
     try {
-      if (req.file) req.body.image_path = req.file.filename;
+      if (req.file) req.body.imagePost = req.file.filename;
       if (!req.body.title || !req.body.body) {
         return res.status(400).json({ msg: "Please fill in all the fields" });
       }
-
       const post = await Post.create({ ...req.body, userId: req.user._id });
       await User.findByIdAndUpdate(req.user._id, {
         $push: { postIds: post._id },
@@ -18,13 +17,13 @@ const PostController = {
       console.error(error);
       res
         .status(500)
-        .send({ message: "there was a problem creating the post" });
+        .send({ message: "there was a problem creating the post" }); 
     }
   },
 
   async update(req, res) {
     try {
-      if (req.file) req.body.image_path = req.file.filename;
+      if (req.file) req.body.imagePost = req.file.filename;
       const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
@@ -119,7 +118,7 @@ const PostController = {
 //arreglar esto, que me busque el id del comment o algo asi
   async updateComment(req, res) {
     try {
-      if (req.file) req.body.image_path = req.file.filename;
+      if (req.file) req.body.imagePost = req.file.filename;
       const post = await Post.findByIdAndUpdate(
         req.params._id,
         {comments: {

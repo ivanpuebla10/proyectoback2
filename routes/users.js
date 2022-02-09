@@ -12,7 +12,7 @@ router.get('/',UserController.getAll)
 router.delete('/logout',authentication, UserController.logout)
 router.get('/confirm/:emailToken',UserController.confirm)
 router.get('/profile',authentication, UserController.getInfo)
-// router.get('/getuser/:id',authentication, UserController.getUserLogged)
-
+router.get('/recoverPassowrd/:email', authentication, UserController.recoverPassword)
+router.put('/resetPassword/:recoverToken', authentication, UserController.resetPassword)
 
 module.exports = router;
