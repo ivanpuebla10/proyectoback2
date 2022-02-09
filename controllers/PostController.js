@@ -116,6 +116,7 @@ const PostController = {
     }
   },
 
+  //pasar ambos id del post y comment por parametros en vez de pasar el del comment por body
   async updateComment(req, res) {
     try {
       req.file ? req.body.image = req.file.filename : req.body.image = ''
@@ -177,6 +178,7 @@ const PostController = {
       res.status(500).send({ message: "There was a problem with your like" });
     }
   },
+  
 
 async deslike(req, res) {
     try {

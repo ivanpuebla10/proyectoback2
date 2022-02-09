@@ -4,7 +4,6 @@ const PostController = require('../controllers/PostController');
 const { authentication, isAuthor  } = require("../middlewares/authentication");
 const { uploadUserProductsImages } = require('../middlewares/multer');
 
-
 router.post('/',authentication, uploadUserProductsImages.single('imagePost'), PostController.create);
 router.put('/:_id', authentication, isAuthor, uploadUserProductsImages.single('imagePost'), PostController.update);
 router.delete('/:_id', authentication, isAuthor, PostController.delete);
@@ -16,6 +15,5 @@ router.put('/updatecomments/:_id', authentication, isAuthor, uploadUserProductsI
 router.put('/deletecomments/:_id', authentication, isAuthor, PostController.deleteComment)
 router.put('/like/:_id', authentication, PostController.like)
 router.put('/deslike/:_id', authentication, PostController.deslike) 
-
  
 module.exports = router;
