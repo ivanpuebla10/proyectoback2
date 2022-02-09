@@ -7,8 +7,32 @@ const transporter = require("../config/nodemailer");
 const UserController = {
   async getAll(req, res) {
     try {
-      const users = await User.find().populate("postIds");
+      const users = await User.find();
       res.send(users);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  async getUserByName(req, res) {
+    try {
+      const user = await User.aggregate([
+        {
+          $match: {
+            username: req.params.username,
+          },
+        },
+      ]);
+      res.send(user);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async getById(req, res) {
+    try {
+      const user = await User.findById(req.params._id);
+      res.send(user);
     } catch (error) {
       console.error(error);
     }
@@ -16,7 +40,7 @@ const UserController = {
 
   async getInfo(req, res) {
     try {
-      const user = await User.findById(req.user._id).populate("postIds");
+      const user = await User.findById(req.user._id).populate("followers");
       res.send(user);
     } catch (error) {
       console.error(error);
@@ -98,6 +122,40 @@ const UserController = {
       console.error(error);
     }
   },
+
+  async follow(req, res) {
+    try {
+      const found = await User.findById(req.params._id);
+      if ( !found.followers.includes(req.user._id)) {
+        const user = await User.findByIdAndUpdate(
+            req.params._id,
+            { $push: { followers: req.user._id } },
+            { new: true }
+          );
+      res.send(user);
+        }
+        else {
+          res.status(400).send({ message: "you already follow this user" });
+        }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "There was a problem following this user " });
+    }
+  },
+
+  async unFollow(req, res) {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.params._id,
+        { $pull: { followers: req.user._id } },
+        { new: true }
+      );
+      res.send(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "There was a problem unfollowing this user" });
+    }
+  },
   
   async update(req, res) {
     try {
@@ -110,8 +168,6 @@ const UserController = {
       console.error(error);
     }
   },
-
-  //crear endpoint actualizar usuario y multer de images
 
   async login(req, res) {
     try {

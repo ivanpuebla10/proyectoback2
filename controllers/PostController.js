@@ -115,23 +115,24 @@ const PostController = {
         .send({ message: "There was a problem with your comment" });
     }
   },
-//arreglar esto, que me busque el id del comment o algo asi
+
   async updateComment(req, res) {
     try {
-      if (req.file) req.body.imagePost = req.file.filename;
-      const post = await Post.findByIdAndUpdate(
-        req.params._id,
-        {comments: {
-            ...req.body},
-        },
+      req.file ? req.body.image = req.file.filename : req.body.image = ''
+      const post = await Post.findByIdAndUpdate(req.params._id, {
+        $pull: { comments: { _id: req.body._id } },
+      });
+      const comment = await Post.findByIdAndUpdate(
+        post._id,
+        { $push: { comments: { ...req.body, userId: post.userId, _id: req.body._id } } },
         { new: true }
       );
-      res.send(post);
+      res.send({ message: "Review actualizada correctamente", comment });
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .send({ message: "There was a problem with your comment" });
+        .send({ message: "Ha habido un problema al actualizar la review" });
     }
   },
 

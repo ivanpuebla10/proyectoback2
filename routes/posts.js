@@ -12,7 +12,7 @@ router.get('/',PostController.getAll);
 router.get('/title/:title',PostController.getPostsByName);
 router.get('/id/:_id',PostController.getById);
 router.put('/comments/:_id', authentication, uploadUserProductsImages.single('imagePost'),PostController.insertComment)
-router.put('/updatecomments/:_id', authentication, isAuthor, PostController.updateComment)
+router.put('/updatecomments/:_id', authentication, isAuthor, uploadUserProductsImages.single('image'), PostController.updateComment)
 router.put('/deletecomments/:_id', authentication, isAuthor, PostController.deleteComment)
 router.put('/like/:_id', authentication, PostController.like)
 router.put('/deslike/:_id', authentication, PostController.deslike) 
