@@ -34,13 +34,12 @@ Using Postman you can see what the database brings and send requests. To see wha
 Database in MongoDB:
 ![foto](./images/mongodb.png)
 
-Database in MongoDB:
-![foto](./images/mongodb.png)
+User's endpoints:
 
-Database in MongoDB:
 ![foto](./images/usersendpoints.png)
 
-Database in MongoDB:
+Post's endpoints:
+
 ![foto](./images/postsendpoints.png)
 
 Folders organization:
