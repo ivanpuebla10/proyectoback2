@@ -116,7 +116,6 @@ const PostController = {
     }
   },
 
-  //pasar ambos id del post y comment por parametros en vez de pasar el del comment por body
   async updateComment(req, res) {
     try {
       req.file ? req.body.image = req.file.filename : req.body.image = ''
@@ -193,5 +192,47 @@ async deslike(req, res) {
       res.status(500).send({ message: "There was a problem with your deslike" });
     }
   },
+
+  async likeComment(req, res) {
+    try {
+      const post = await Post.findByIdAndUpdate(req.params._idPost);
+      let comments = post.comments;
+      const user = req.user._id.toString();
+      for (let i = 0; i < comments.length; i++) {
+        const idCheck = comments[i]._id;
+        if (idCheck == req.params._id) {
+          if (comments[i].likes.indexOf(req.user._id) != -1) {
+            res.send("like allready given");
+          } else {
+            comments[i].likes.push(user);
+          }
+        }
+      }
+      post.save();
+      res.send(post);
+    } catch (error) {
+      console.log(error)
+    }
+  },
+
+  async unlikeComment(req, res) {
+    try {
+      const post = await Post.findByIdAndUpdate(req.params._idPost);
+      let comments = post.comments;
+      for (let i = 0; i < comments.length; i++) {
+        const idCheck = comments[i]._id;
+        if (idCheck == req.params._id) {
+          const user = req.user._id.toString();
+          let arr = comments[i].likes;
+          if (arr.indexOf(user) != -1)
+            comments[i].likes.splice(arr.indexOf(user), 1);
+        }
+      }
+      post.save();
+      res.send(post);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 module.exports = PostController;
