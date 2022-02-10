@@ -2,7 +2,7 @@
 This Social Network is a database for a simple social network created with mongoose. 
 
 ## TECHNOLOGIES 🛠️
-This database was created using Javascript, Node.js, Express, MongoDB, mongoose, Multer, Bcrypt, Nodemailer, jsonwebtoken. The code was written in Visual Studio Code.
+This database was created using Javascript, Node.js, Express, MongoDB, mongoose, Multer, Bcrypt, Nodemailer, jsonwebtoken, Swagger. The code was written in Visual Studio Code.
 
 
 ### REQUIREMENTS 📋
@@ -45,6 +45,10 @@ Post's endpoints:
 Folders organization:
 
 ![foto](./images/folders.png)
+
+Swagger:
+
+![foto](./images/swagger.png)
 
 ## Author ✒️
 * **Ivan Puebla** - *The Bridge* - [ivanpuebla10](https://github.com/ivanpuebla10)
