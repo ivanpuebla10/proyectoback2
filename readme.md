@@ -2,7 +2,7 @@
 This Social Network is a database for a simple social network created with mongoose. 
 
 ## TECHNOLOGIES 🛠️
-This database was created using Javascript, Node.js, Express, MongoDB, mongoose, Multer, Bcrypt, Nodemailer, jsonwebtoken, Swagger. The code was written in Visual Studio Code.
+This database was created using Javascript, Node.js, Express, MongoDB, mongoose, Multer, Bcrypt, Nodemailer, jsonwebtoken.API documented with Swagger. The code was written in Visual Studio Code.
 
 
 ### REQUIREMENTS 📋
@@ -13,7 +13,7 @@ Visual studio code. Node.js installed. MongoDBcompass installed. Postman install
 - Clone this repository `https://github.com/ivanpuebla10/proyectoback2`
 - Install the dependencies `npm install`
 - Create a new repo on GitHub: `https://github.com/new`
-    - Make sure the "Initialize this repository with a README" option is left unchecked
+- Make sure the "Initialize this repository with a README" option is left unchecked
 - Update the remote to point to your GitHub repository: git remote set-url origin `https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME`
 
 ## Working on the project 👷‍♂️
@@ -46,7 +46,7 @@ Folders organization:
 
 ![foto](./images/folders.png)
 
-Swagger:
+Some endpoints Swagger:
 
 ![foto](./images/swagger.png)
 
