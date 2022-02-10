@@ -7,7 +7,7 @@ const transporter = require("../config/nodemailer");
 const UserController = {
   async getAll(req, res) {
     try {
-      const users = await User.find();
+      const users = await User.find().populate("followers","username");
       res.send(users);
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ const UserController = {
 
   async getInfo(req, res) {
     try {
-      const user = await User.findById(req.user._id).populate("followers");
+      const user = await User.findById(req.user._id).populate("followers","username");
       res.send(user);
     } catch (error) {
       console.error(error);

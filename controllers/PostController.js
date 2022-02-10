@@ -57,9 +57,10 @@ const PostController = {
   async getAll(req, res) {
     try {
       const { page = 1, limit = 10 } = req.query;
-      const posts = await Post.find()
-        .populate("comments.userId")
-        .populate("likes.userId")
+      const posts = await Post.find().populate("userId","username")
+        .populate("likes", "username")
+        .populate("comments.userId","username")
+        .populate("comments.likes", "username")
         .limit(limit * 1)
         .skip((page - 1) * limit);
       res.send(posts);
