@@ -7,7 +7,7 @@ const transporter = require("../config/nodemailer");
 const UserController = {
   async getAll(req, res) {
     try {
-      const users = await User.find().populate("followers","username");
+      const users = await User.find().populate("followers","username","postIds");
       res.send(users);
     } catch (error) {
       console.error(error);
@@ -40,13 +40,12 @@ const UserController = {
 
   async getInfo(req, res) {
     try {
-      const user = await User.findById(req.user._id).populate("followers","username");
+      const user = await User.findById(req.user._id).populate("postIds")
       res.send(user);
     } catch (error) {
       console.error(error);
     }
   },
-
   async create(req, res) {
     try {
       if (req.file) req.body.image_path = req.file.filename;
@@ -64,7 +63,7 @@ const UserController = {
       const emailToken = jwt.sign({ email: req.body.email }, jwt_secret, {
         expiresIn: "48h",
       });
-      const url = "http://localhost:3000/users/confirm/" + emailToken;
+      const url = "http://localhost:4000/users/confirm/" + emailToken;
       await transporter.sendMail({
         to: req.body.email,
         subject: "Confirme su registro",  
@@ -92,7 +91,7 @@ const UserController = {
       const recoverToken = jwt.sign({ email: req.params.email }, jwt_secret, {
         expiresIn: "48h",
       });
-      const url = "http://localhost:3000/users/resetPassword/" + recoverToken;
+      const url = "http://localhost:4000/users/resetPassword/" + recoverToken;
       await transporter.sendMail({
         to: req.params.email,
         subject: "Password recovering",
@@ -171,7 +170,7 @@ const UserController = {
 
   async login(req, res) {
     try {
-      const user = await User.findOne({ email: req.body.email });
+      const user = await User.findOne({ email: req.body.email }).populate("postIds");
       if (!user) {
         return res.status(400).send({ message: "email or password wrong" });
       }
@@ -187,7 +186,7 @@ const UserController = {
         return res.status(400).send({ message: "email or password wrong" });
       }
       token = jwt.sign({ _id: user._id }, jwt_secret);
-      if (user.token.length > 4) user.tokens.shift();
+      if (user.token.length > 4) user.token.shift();
       user.token.push(token);
       await user.save();
       res.send({ message: "Welcome " + user.username, user, token });

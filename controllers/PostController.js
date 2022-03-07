@@ -45,7 +45,7 @@ const PostController = {
         },
         { new: true } 
       );
-      res.send({ post, message: "Post deleted" });
+      res.send({ post, message: "Post deleted", _id:req.params._id});
     } catch (error) {
       console.error(error);
       res
@@ -58,7 +58,6 @@ const PostController = {
     try {
       const { page = 1, limit = 10 } = req.query;
       const posts = await Post.find().populate("userId","username")
-        .populate("likes", "username")
         .populate("comments.userId","username")
         .populate("comments.likes", "username")
         .limit(limit * 1)
