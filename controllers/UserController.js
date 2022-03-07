@@ -7,7 +7,7 @@ const transporter = require("../config/nodemailer");
 const UserController = {
   async getAll(req, res) {
     try {
-      const users = await User.find().populate("followers","username","postIds");
+      const users = await User.find().populate("postIds");
       res.send(users);
     } catch (error) {
       console.error(error);
