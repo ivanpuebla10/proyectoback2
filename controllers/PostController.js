@@ -106,7 +106,7 @@ const PostController = {
           },
         },
         { new: true }
-      );
+      ).populate("userId");
       res.send(post);
     } catch (error) {
       console.error(error);
